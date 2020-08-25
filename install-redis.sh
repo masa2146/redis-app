@@ -1,7 +1,10 @@
 #!/bin/bash
 
-machineIp=$1
-masterMachineIp=$2
+#machineIp=$2
+masterMachineIp=$1
+
+eth1=`ifconfig eth1 2>/dev/null|awk '/inet addr:/ {print $2}'|sed 's/addr://'`
+eth0=`ifconfig eth0 2>/dev/null|awk '/inet addr:/ {print $2}'|sed 's/addr://'`
 
 # Download redis files
 sudo cd /tmp
@@ -46,25 +49,25 @@ sudo cp conf/service/redis-server.service /etc/systemd/system/redis-server.servi
 sudo cp conf/service/redis-sentinel.service /etc/systemd/system/redis-sentinel.service
 
 #If master ip equals to current ip then currently machine is master machine
-if [ $machineIp = $masterMachineIp ]
+if [ $eth0 = $masterMachineIp ] || [$eth1 = $masterMachineIp]
 then
 sudo yes | cp conf/redis/master/redis.conf /etc/redis/redis.conf
 sudo yes | cp conf/redis/master/sentinel.conf /etc/redis/sentinel.conf
 
-sudo sed -e "s/&ip_address/$machineIp/g" /etc/redis/redis.conf > temp_redis.conf && mv temp_redis.conf /etc/redis/redis.conf 
+#sudo sed -e "s/&ip_address/$machineIp/g" /etc/redis/redis.conf > temp_redis.conf && mv temp_redis.conf /etc/redis/redis.conf 
 sudo sed -e "s/&master_ip/$masterMachineIp/g" /etc/redis/redis.conf > temp_redis.conf && mv temp_redis.conf /etc/redis/redis.conf
 
-sudo sed -e "s/&ip_address/$machineIp/g" /etc/redis/sentinel.conf > temp_sentinel.conf && mv temp_sentinel.conf /etc/redis/sentinel.conf
+#sudo sed -e "s/&ip_address/$machineIp/g" /etc/redis/sentinel.conf > temp_sentinel.conf && mv temp_sentinel.conf /etc/redis/sentinel.conf
 sudo sed -e "s/&master_ip/$masterMachineIp/g" /etc/redis/sentinel.conf > temp_sentinel.conf && mv temp_sentinel.conf /etc/redis/sentinel.conf
 
 else
 sudo yes | cp conf/redis/slave/redis.conf /etc/redis/redis.conf
 sudo yes | cp conf/redis/slave/sentinel.conf /etc/redis/sentinel.conf
 
-sudo sed -e "s/&ip_address/$machineIp/g" /etc/redis/redis.conf > temp_redis.conf && mv temp_redis.conf /etc/redis/redis.conf
+#sudo sed -e "s/&ip_address/$machineIp/g" /etc/redis/redis.conf > temp_redis.conf && mv temp_redis.conf /etc/redis/redis.conf
 sudo sed -e "s/&master_ip/$masterMachineIp/g" /etc/redis/redis.conf > temp_redis.conf && mv temp_redis.conf /etc/redis/redis.conf
 
-sudo sed -e "s/&ip_address/$machineIp/g" /etc/redis/sentinel.conf > temp_sentinel.conf && mv temp_sentinel.conf /etc/redis/sentinel.conf
+#sudo sed -e "s/&ip_address/$machineIp/g" /etc/redis/sentinel.conf > temp_sentinel.conf && mv temp_sentinel.conf /etc/redis/sentinel.conf
 sudo sed -e "s/&master_ip/$masterMachineIp/g" /etc/redis/sentinel.conf > temp_sentinel.conf && mv temp_sentinel.conf /etc/redis/sentinel.conf
 fi
 
@@ -79,7 +82,7 @@ sudo systemctl start redis-sentinel
 sudo systemctl status redis-sentinel
 sudo systemctl enable redis-sentinel
 
-echo "IP:" $machineIp
+echo "ETH0:" $eth1
 echo "MASTER IP:" $masterMachineIp
 
 reboot
