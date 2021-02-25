@@ -7,6 +7,13 @@ then
 Master IP is NULL!. You must give master ip with params. 
 Example: './install-redis.sh <MASTER_IP> <YOUR_SYSTEM_IP>' 
 ====================================================== "
+elif [ -z "$2" ]
+then
+           echo " 
+======================================================
+Your system IP is NULL!. You must give your system ip with params. 
+Example: './install-redis.sh <MASTER_IP> <YOUR_SYSTEM_IP>' 
+====================================================== "
 else
         #machineIp=$2
         masterMachineIp=$1
