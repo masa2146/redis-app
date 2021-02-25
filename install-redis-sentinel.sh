@@ -18,7 +18,7 @@ else
         #machineIp=$2
         masterMachineIp=$1
         currentDir=$(pwd)
-        currentMachineIP=$(hostname -I)
+        currentMachineIP=$2#$(hostname -I)
 
         # Download redis files
         sudo cd /tmp
