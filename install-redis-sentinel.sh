@@ -5,7 +5,7 @@ then
            echo " 
 ======================================================
 Master IP is NULL!. You must give master ip with params. 
-Example: './install-redis.sh 192.168.83.142' 
+Example: './install-redis.sh <MASTER_IP> <YOUR_SYSTEM_IP>' 
 ====================================================== "
 else
         #machineIp=$2
